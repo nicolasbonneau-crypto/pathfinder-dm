@@ -4,6 +4,7 @@ export interface ChatMessage {
   role: 'user' | 'assistant'
   content: string
   sources?: string[]
+  has_context?: boolean
   timestamp: number
 }
 
@@ -37,6 +38,15 @@ export interface Encounter {
   active_combatant_index: number
   is_running: boolean
   combatants: Combatant[]
+  created_at: string
+}
+
+export interface PlayerTemplate {
+  id: string
+  name: string
+  class_name: string | null
+  max_hp: number
+  ac: number | null
   created_at: string
 }
 

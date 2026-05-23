@@ -49,6 +49,24 @@ class EncounterOut(BaseModel):
     model_config = {"from_attributes": True}
 
 
+class PlayerTemplateCreate(BaseModel):
+    name: str
+    class_name: Optional[str] = None
+    max_hp: int
+    ac: Optional[int] = None
+
+
+class PlayerTemplateOut(BaseModel):
+    id: str
+    name: str
+    class_name: Optional[str]
+    max_hp: int
+    ac: Optional[int]
+    created_at: datetime
+
+    model_config = {"from_attributes": True}
+
+
 class MonsterAbilities(BaseModel):
     str: int
     dex: int

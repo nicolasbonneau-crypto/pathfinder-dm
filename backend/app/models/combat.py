@@ -6,6 +6,17 @@ from typing import Optional
 from app.database import Base
 
 
+class PlayerTemplate(Base):
+    __tablename__ = "player_templates"
+
+    id: Mapped[str] = mapped_column(String, primary_key=True)
+    name: Mapped[str] = mapped_column(String, nullable=False)
+    class_name: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    max_hp: Mapped[int] = mapped_column(Integer, nullable=False)
+    ac: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(UTC))
+
+
 class Encounter(Base):
     __tablename__ = "encounters"
 

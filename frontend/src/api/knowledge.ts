@@ -22,7 +22,7 @@ export async function deleteBook(id: string): Promise<void> {
 export async function sendChatMessage(
   message: string,
   history: ChatMessage[],
-): Promise<{ answer: string; sources: string[] }> {
+): Promise<{ answer: string; sources: string[]; has_context: boolean }> {
   const { data } = await apiClient.post('/api/knowledge/chat', {
     message,
     history: history.map((m) => ({ role: m.role, content: m.content })),

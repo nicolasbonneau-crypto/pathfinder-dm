@@ -1,15 +1,14 @@
 import { useState } from 'react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { Plus, Heart, Shield, ChevronUp, ChevronDown, Trash2 } from 'lucide-react'
+import { Plus, Shield, ChevronUp, ChevronDown, Trash2 } from 'lucide-react'
 import { addCombatant, updateCombatant, removeCombatant } from '@/api/combat'
 import type { Combatant, Encounter } from '@/types'
 
 interface Props {
   encounter: Encounter
-  onUpdated: (enc: Encounter) => void
 }
 
-export default function InitiativeTracker({ encounter, onUpdated }: Props) {
+export default function InitiativeTracker({ encounter }: Props) {
   const qc = useQueryClient()
   const [showAdd, setShowAdd] = useState(false)
 
@@ -97,7 +96,7 @@ export default function InitiativeTracker({ encounter, onUpdated }: Props) {
 }
 
 function AddCombatantForm({ encounterId, onAdded, onCancel }: { encounterId: string; onAdded: () => void; onCancel: () => void }) {
-  const [form, setForm] = useState({ name: '', type: 'monster' as const, max_hp: 20, current_hp: 20, initiative: '', ac: '' })
+  const [form, setForm] = useState({ name: '', type: 'monster' as 'player' | 'monster', max_hp: 20, current_hp: 20, initiative: '', ac: '' })
 
   const mutation = useMutation({
     mutationFn: () => addCombatant(encounterId, {

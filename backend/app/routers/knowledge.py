@@ -77,5 +77,5 @@ async def chat(request: ChatRequest, db: Session = Depends(get_db)):
     if not books_exist:
         raise HTTPException(status_code=422, detail="No books indexed. Upload a PDF first.")
 
-    answer, sources = rag_service.query_rag(request.message, request.history)
-    return ChatResponse(answer=answer, sources=sources)
+    answer, sources, has_context = rag_service.query_rag(request.message, request.history)
+    return ChatResponse(answer=answer, sources=sources, has_context=has_context)

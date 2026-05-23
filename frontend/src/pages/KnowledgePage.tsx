@@ -22,12 +22,13 @@ export default function KnowledgePage() {
   const chatMutation = useMutation({
     mutationFn: ({ message, history }: { message: string; history: ChatMessageType[] }) =>
       sendChatMessage(message, history),
-    onSuccess: (data, variables) => {
+    onSuccess: (data) => {
       const assistantMsg: ChatMessageType = {
         id: uuidv4(),
         role: 'assistant',
         content: data.answer,
         sources: data.sources,
+        has_context: data.has_context,
         timestamp: Date.now(),
       }
       setMessages((prev) => [...prev, assistantMsg])

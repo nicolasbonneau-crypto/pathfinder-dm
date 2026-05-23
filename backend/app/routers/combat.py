@@ -6,10 +6,40 @@ from app.database import get_db
 from app.schemas.combat import (
     CombatantCreate, CombatantPatch, CombatantOut,
     EncounterCreate, EncounterOut, MonsterCardOut,
+    PlayerTemplateCreate, PlayerTemplateOut,
 )
 from app.services import combat_service, monster_service
 
 router = APIRouter(prefix="/api/combat", tags=["combat"])
+
+
+@router.get("/templates", response_model=list[PlayerTemplateOut])
+def list_templates(db: Session = Depends(get_db)):
+    return combat_service.list_templates(db)
+
+
+@router.post("/templates", response_model=PlayerTemplateOut, status_code=201)
+def create_template(data: PlayerTemplateCreate, db: Session = Depends(get_db)):
+    return combat_service.create_template(db, data)
+
+
+@router.delete("/templates/{template_id}", status_code=204)
+def delete_template(template_id: str, db: Session = Depends(get_db)):
+    combat_service.delete_template(db, template_id)
+
+
+@router.post(
+    "/encounter/{encounter_id}/combatants/from-template/{template_id}",
+    response_model=CombatantOut,
+    status_code=201,
+)
+def add_combatant_from_template(
+    encounter_id: str, template_id: str, db: Session = Depends(get_db)
+):
+    try:
+        return combat_service.add_combatant_from_template(db, encounter_id, template_id)
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
 
 
 @router.get("/encounter/active", response_model=EncounterOut | None)
@@ -58,6 +88,8 @@ def end_encounter(encounter_id: str, db: Session = Depends(get_db)):
 def get_monster(name: str):
     try:
         return monster_service.get_monster_card(name)
+    except LookupError as e:
+        raise HTTPException(status_code=404, detail=str(e))
     except Exception as e:
         raise HTTPException(status_code=502, detail=f"Monster lookup failed: {e}")
 

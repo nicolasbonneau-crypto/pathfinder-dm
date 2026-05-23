@@ -5,6 +5,7 @@ import InitiativeTracker from '@/components/combat/InitiativeTracker'
 import MonsterLookup from '@/components/combat/MonsterLookup'
 import MonsterCardPanel from '@/components/combat/MonsterCardPanel'
 import NewEncounterModal from '@/components/combat/NewEncounterModal'
+import PlayerTemplates from '@/components/combat/PlayerTemplates'
 import { getActiveEncounter, nextTurn, endEncounter } from '@/api/combat'
 import { useCombatStore } from '@/store/combatStore'
 import { useState } from 'react'
@@ -67,14 +68,12 @@ export default function CombatPage() {
         </div>
 
         {encounter && (
-          <InitiativeTracker
-            encounter={encounter}
-            onUpdated={(updated) => setEncounter(updated)}
-          />
+          <InitiativeTracker encounter={encounter} />
         )}
       </div>
 
       <div className="combat-right">
+        <PlayerTemplates encounterId={encounter?.id} />
         <MonsterLookup />
         <MonsterCardPanel cards={monsterCards} />
       </div>
