@@ -5,7 +5,7 @@
 A local web app for Pathfinder 2e Dungeon Masters with two core features:
 
 1. **Knowledge Base (Page 1)** — RAG-powered chatbot over uploaded Pathfinder rulebook PDFs, answered by Claude.
-2. **Combat Tracker (Page 2)** — Initiative/HP tracker for players and monsters, plus dynamic monster stat cards queried from the RAG or internet.
+2. **Combat Tracker (Page 2)** — Initiative/HP tracker for players and monsters, plus dynamic monster stat cards queried strictly from the RAG (uploaded rulebooks only).
 
 **Single-user, local deployment.** No authentication. SQLite database. Runs on Mac and Windows.
 
@@ -136,7 +136,31 @@ VITE_API_BASE_URL=http://localhost:8000
 ## Key Decisions
 
 - **ChromaDB local persistence** — vector store lives on disk next to the backend. No cloud vector DB needed.
-- **LlamaIndex** orchestrates RAG: PDF → chunks → embeddings (via Claude) → ChromaDB → retrieval → Claude answer.
+- **LlamaIndex** orchestrates RAG: PDF → chunks → embeddings (bge-small-en-v1.5, local) → ChromaDB → retrieval → Claude answer.
 - **SQLite** stores combat state (encounters, combatants, HP log) and persists across sessions.
 - **No auth** — single-user, local only. If deployed publicly, add auth first.
-- **Internet fallback for monster lookup** — if the RAG has no answer, the monster service can do a targeted web search via the Anthropic web search tool or a fallback HTTP call to Archives of Nethys.
+- **Monster lookup is RAG-only** — stat blocks come strictly from uploaded rulebooks. `LookupError` if the monster is not found; no internet fallback, no training-data hallucination.
+- **Library monkey-patches** — `rag_service.py` patches two library bugs at module load: (1) `llama-index-llms-anthropic 0.3.5` doesn't recognise claude-sonnet-4-6; (2) `llama-index-vector-stores-chroma 0.2.1` passes `where={}` which ChromaDB 0.5.x rejects. Do not remove these patches without upgrading both libraries.
+
+---
+
+## Pre-Commit Checklist
+
+Run this before every `git commit`:
+
+```bash
+# 1. Backend tests (all must pass)
+cd backend && pytest
+
+# 2. Frontend unit + integration tests (all must pass)
+cd frontend && npm test
+
+# 3. TypeScript — zero errors
+cd frontend && npm run typecheck
+```
+
+Then review:
+- [ ] No `.env`, `*.db`, SSH keys, or secrets staged (`git diff --cached --name-only`)
+- [ ] Legacy code removed — no dead imports, unused variables, or commented-out blocks
+- [ ] New components have unit tests; new API endpoints have integration tests
+- [ ] CLAUDE.md files reflect any architectural changes made

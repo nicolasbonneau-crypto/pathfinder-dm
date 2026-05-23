@@ -16,6 +16,11 @@ export default function InitiativeTracker({ encounter }: Props) {
   const sorted = [...encounter.combatants].sort(
     (a, b) => (b.initiative ?? -999) - (a.initiative ?? -999),
   )
+  // Mirror the backend's advance_turn logic: active index is into the living-only sorted list
+  const liveSorted = sorted.filter((c) => c.current_hp > 0)
+  const activeCombatantId = encounter.is_running
+    ? liveSorted[encounter.active_combatant_index]?.id
+    : null
 
   const invalidate = () => qc.invalidateQueries({ queryKey: ['encounter', 'active'] })
 
@@ -55,8 +60,8 @@ export default function InitiativeTracker({ encounter }: Props) {
         <div className="round-header">Round {encounter.round}</div>
       )}
       <div className="tracker-list">
-        {sorted.map((c, idx) => {
-          const isActive = encounter.is_running && idx === encounter.active_combatant_index
+        {sorted.map((c) => {
+          const isActive = c.id === activeCombatantId
           const hpPct = Math.round((c.current_hp / c.max_hp) * 100)
           const isEditingInit = editingInit?.id === c.id
           return (

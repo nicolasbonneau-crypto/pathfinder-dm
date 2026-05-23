@@ -14,6 +14,7 @@ from app.schemas.combat import MonsterCardOut
 
 _SIMILARITY_CUTOFF = 0.4
 _TOP_K = 8
+_llamaindex_ready = False
 
 _SYSTEM_PROMPT = """You are a Pathfinder 2e stat block extractor.
 
@@ -43,8 +44,12 @@ Do not guess, estimate, or fill gaps from memory."""
 
 
 def _configure_llamaindex() -> None:
+    global _llamaindex_ready
+    if _llamaindex_ready:
+        return
     LISettings.llm = AnthropicLLM(model=settings.claude_model, api_key=settings.anthropic_api_key)
     LISettings.embed_model = HuggingFaceEmbedding(model_name="BAAI/bge-small-en-v1.5")
+    _llamaindex_ready = True
 
 
 def _get_chroma_collection() -> chromadb.Collection:

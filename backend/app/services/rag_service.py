@@ -41,9 +41,9 @@ import chromadb
 
 from app.config import settings
 
-# Tune this if retrieval is too strict (false negatives) or too loose (hallucination).
 _SIMILARITY_CUTOFF = 0.4
 _TOP_K = 6
+_llamaindex_ready = False
 
 _SYSTEM_PROMPT = (
     "You are a Pathfinder 2e rules assistant. You may ONLY use the rulebook excerpts "
@@ -68,11 +68,15 @@ def _get_chroma_collection() -> chromadb.Collection:
 
 
 def _configure_llamaindex() -> None:
+    global _llamaindex_ready
+    if _llamaindex_ready:
+        return
     LISettings.llm = AnthropicLLM(
         model=settings.claude_model,
         api_key=settings.anthropic_api_key,
     )
     LISettings.embed_model = HuggingFaceEmbedding(model_name="BAAI/bge-small-en-v1.5")
+    _llamaindex_ready = True
 
 
 def _build_chat_history(history: list[dict[str, str]]) -> list[ChatMessage]:

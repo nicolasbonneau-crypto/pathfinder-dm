@@ -65,3 +65,10 @@ backend/migrations/versions/__pycache__/
 .env
 .env.local
 .env.*.local
+
+# SSH keys (never commit private keys)
+pathfinder-dm-key
+pathfinder-dm-key.pub
+*.pem
+id_rsa
+id_ed25519

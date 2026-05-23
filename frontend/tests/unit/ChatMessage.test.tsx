@@ -34,4 +34,21 @@ describe('ChatMessage', () => {
     render(<ChatMessage message={userMsg} />)
     expect(screen.queryByText(/Core Rulebook/)).not.toBeInTheDocument()
   })
+
+  it('shows no-context warning when has_context is false', () => {
+    const noContextMsg: ChatMessageType = {
+      id: '3',
+      role: 'assistant',
+      content: "I couldn't find that in the uploaded rulebooks.",
+      has_context: false,
+      timestamp: Date.now(),
+    }
+    render(<ChatMessage message={noContextMsg} />)
+    expect(screen.getByText(/Not found in uploaded rulebooks/)).toBeInTheDocument()
+  })
+
+  it('does not show no-context warning for normal assistant messages', () => {
+    render(<ChatMessage message={assistantMsg} />)
+    expect(screen.queryByText(/Not found in uploaded rulebooks/)).not.toBeInTheDocument()
+  })
 })

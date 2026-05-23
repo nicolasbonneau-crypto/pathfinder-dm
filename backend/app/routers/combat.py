@@ -3,6 +3,7 @@ from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.orm import Session
 
 from app.database import get_db
+from app.models.combat import Encounter
 from app.schemas.combat import (
     CombatantCreate, CombatantPatch, CombatantOut,
     EncounterCreate, EncounterOut, MonsterCardOut,
@@ -103,7 +104,6 @@ def get_monster(name: str):
 
 
 def _get_encounter_or_404(encounter_id: str, db: Session):
-    from app.models.combat import Encounter
     encounter = db.query(Encounter).filter(Encounter.id == encounter_id).first()
     if not encounter:
         raise HTTPException(status_code=404, detail="Encounter not found")
