@@ -31,6 +31,7 @@ def _fixed__get(self, limit, where, **kwargs):  # type: ignore[override]
 _ChromaVS._query = _fixed__query  # type: ignore[method-assign]
 _ChromaVS._get = _fixed__get  # type: ignore[method-assign]
 
+from pypdf import PdfReader
 from llama_index.core import VectorStoreIndex, SimpleDirectoryReader, StorageContext, Settings as LISettings
 from llama_index.core.llms import ChatMessage, MessageRole
 from llama_index.core.postprocessor import SimilarityPostprocessor
@@ -100,7 +101,7 @@ def index_pdf(pdf_path: Path, book_id: str) -> int:
         doc.metadata["source"] = pdf_path.name
 
     VectorStoreIndex.from_documents(docs, storage_context=storage_context)
-    return len(docs)
+    return len(PdfReader(pdf_path).pages)
 
 
 def delete_book_chunks(book_id: str) -> None:

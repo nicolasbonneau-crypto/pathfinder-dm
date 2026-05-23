@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, NavLink } from 'react-router-dom'
 import { BookOpen, Swords } from 'lucide-react'
 import KnowledgePage from './pages/KnowledgePage'
 import CombatPage from './pages/CombatPage'
+import ErrorBoundary from './components/ErrorBoundary'
 
 export default function App() {
   return (
@@ -21,10 +22,12 @@ export default function App() {
           </div>
         </nav>
         <main className="main">
-          <Routes>
-            <Route path="/" element={<KnowledgePage />} />
-            <Route path="/combat" element={<CombatPage />} />
-          </Routes>
+          <ErrorBoundary>
+            <Routes>
+              <Route path="/" element={<KnowledgePage />} />
+              <Route path="/combat" element={<CombatPage />} />
+            </Routes>
+          </ErrorBoundary>
         </main>
       </div>
     </BrowserRouter>
