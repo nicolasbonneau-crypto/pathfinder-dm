@@ -6,7 +6,7 @@ from app.database import get_db
 from app.schemas.combat import (
     CombatantCreate, CombatantPatch, CombatantOut,
     EncounterCreate, EncounterOut, MonsterCardOut,
-    PlayerTemplateCreate, PlayerTemplateOut,
+    PlayerTemplateCreate, PlayerTemplateUpdate, PlayerTemplateOut,
 )
 from app.services import combat_service, monster_service
 
@@ -21,6 +21,14 @@ def list_templates(db: Session = Depends(get_db)):
 @router.post("/templates", response_model=PlayerTemplateOut, status_code=201)
 def create_template(data: PlayerTemplateCreate, db: Session = Depends(get_db)):
     return combat_service.create_template(db, data)
+
+
+@router.patch("/templates/{template_id}", response_model=PlayerTemplateOut)
+def update_template(template_id: str, patch: PlayerTemplateUpdate, db: Session = Depends(get_db)):
+    try:
+        return combat_service.update_template(db, template_id, patch)
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
 
 
 @router.delete("/templates/{template_id}", status_code=204)

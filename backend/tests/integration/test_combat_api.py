@@ -111,6 +111,26 @@ class TestPlayerTemplatesAPI:
         res = client.post(f"/api/combat/encounter/{enc['id']}/combatants/from-template/bad-id")
         assert res.status_code == 404
 
+    def test_update_template(self, client):
+        t = client.post("/api/combat/templates", json={"name": "Aria", "max_hp": 50}).json()
+        res = client.patch(f"/api/combat/templates/{t['id']}", json={"name": "Aria Brightblade", "max_hp": 60, "ac": 18})
+        assert res.status_code == 200
+        data = res.json()
+        assert data["name"] == "Aria Brightblade"
+        assert data["max_hp"] == 60
+        assert data["ac"] == 18
+
+    def test_update_template_partial(self, client):
+        t = client.post("/api/combat/templates", json={"name": "Bard", "max_hp": 55, "ac": 16}).json()
+        res = client.patch(f"/api/combat/templates/{t['id']}", json={"ac": 19})
+        assert res.status_code == 200
+        assert res.json()["ac"] == 19
+        assert res.json()["name"] == "Bard"
+
+    def test_update_nonexistent_template_returns_404(self, client):
+        res = client.patch("/api/combat/templates/bad-id", json={"name": "X"})
+        assert res.status_code == 404
+
 
 class TestEncounterAPI:
     def test_no_active_encounter_returns_null(self, client):

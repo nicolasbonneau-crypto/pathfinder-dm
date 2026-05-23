@@ -56,6 +56,13 @@ class PlayerTemplateCreate(BaseModel):
     ac: Optional[int] = None
 
 
+class PlayerTemplateUpdate(BaseModel):
+    name: Optional[str] = None
+    class_name: Optional[str] = None
+    max_hp: Optional[int] = None
+    ac: Optional[int] = None
+
+
 class PlayerTemplateOut(BaseModel):
     id: str
     name: str

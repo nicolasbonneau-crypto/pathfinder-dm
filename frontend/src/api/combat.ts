@@ -64,6 +64,14 @@ export async function createTemplate(
   return data
 }
 
+export async function updateTemplate(
+  id: string,
+  patch: Partial<Pick<PlayerTemplate, 'name' | 'class_name' | 'max_hp' | 'ac'>>,
+): Promise<PlayerTemplate> {
+  const { data } = await apiClient.patch<PlayerTemplate>(`/api/combat/templates/${id}`, patch)
+  return data
+}
+
 export async function deleteTemplate(id: string): Promise<void> {
   await apiClient.delete(`/api/combat/templates/${id}`)
 }

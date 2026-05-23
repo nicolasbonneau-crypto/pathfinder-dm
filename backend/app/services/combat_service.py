@@ -3,7 +3,7 @@ import uuid
 from sqlalchemy.orm import Session
 
 from app.models.combat import Encounter, Combatant, PlayerTemplate
-from app.schemas.combat import CombatantCreate, CombatantPatch, EncounterCreate, PlayerTemplateCreate
+from app.schemas.combat import CombatantCreate, CombatantPatch, EncounterCreate, PlayerTemplateCreate, PlayerTemplateUpdate
 
 
 def get_active_encounter(db: Session) -> Encounter | None:
@@ -86,6 +86,17 @@ def list_templates(db: Session) -> list[PlayerTemplate]:
 def create_template(db: Session, data: PlayerTemplateCreate) -> PlayerTemplate:
     template = PlayerTemplate(id=str(uuid.uuid4()), **data.model_dump())
     db.add(template)
+    db.commit()
+    db.refresh(template)
+    return template
+
+
+def update_template(db: Session, template_id: str, patch: PlayerTemplateUpdate) -> PlayerTemplate:
+    template = db.query(PlayerTemplate).filter(PlayerTemplate.id == template_id).first()
+    if template is None:
+        raise ValueError(f"Template {template_id} not found")
+    for field, value in patch.model_dump(exclude_none=True).items():
+        setattr(template, field, value)
     db.commit()
     db.refresh(template)
     return template

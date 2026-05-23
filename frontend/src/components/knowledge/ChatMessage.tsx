@@ -30,7 +30,7 @@ export default function ChatMessage({ message }: Props) {
         .msg { display: flex; }
         .msg-user { justify-content: flex-end; }
         .msg-assistant { justify-content: flex-start; }
-        .msg-bubble { max-width: 75%; padding: 10px 14px; border-radius: 12px; }
+        .msg-bubble { max-width: min(75%, 560px); min-width: 0; padding: 10px 14px; border-radius: 12px; word-break: break-word; }
         .msg-user .msg-bubble { background: var(--accent); color: #fff; border-bottom-right-radius: 4px; }
         .msg-assistant .msg-bubble { background: var(--bg-card); border: 1px solid var(--border); border-bottom-left-radius: 4px; }
         .msg-no-context { border-color: #78350f !important; background: #1c1208 !important; }

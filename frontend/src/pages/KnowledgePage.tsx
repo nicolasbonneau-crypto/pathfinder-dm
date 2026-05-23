@@ -106,9 +106,9 @@ export default function KnowledgePage() {
       </div>
 
       <style>{`
-        .knowledge-page { display: flex; height: 100%; overflow: hidden; }
-        .knowledge-sidebar { width: 280px; flex-shrink: 0; padding: 16px; overflow-y: auto; border-right: 1px solid var(--border); display: flex; flex-direction: column; gap: 16px; }
-        .chat-container { flex: 1; display: flex; flex-direction: column; }
+        .knowledge-page { display: flex; height: 100%; overflow: hidden; min-width: 0; }
+        .knowledge-sidebar { width: clamp(220px, 22vw, 280px); flex-shrink: 0; padding: 12px; overflow-y: auto; border-right: 1px solid var(--border); display: flex; flex-direction: column; gap: 12px; }
+        .chat-container { flex: 1; min-width: 0; display: flex; flex-direction: column; }
         .chat-messages { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 12px; }
         .chat-empty { text-align: center; color: var(--text-muted); margin-top: 80px; }
         .chat-empty-hint { font-size: 0.8rem; margin-top: 8px; color: var(--accent); }
